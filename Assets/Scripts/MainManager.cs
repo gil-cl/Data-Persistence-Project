@@ -18,6 +18,7 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
+    [SerializeField] private Text BestScoreText; 
     
     // Start is called before the first frame update
     void Start()
@@ -36,6 +37,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        DisplayHighScore(); 
     }
 
     private void Update()
@@ -66,11 +69,23 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+
+        if (m_Points > MenuUIhandler.Instance.HighScore)
+        {
+            MenuUIhandler.Instance.HighScore = m_Points;
+            DisplayHighScore(); 
+        }
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        MenuUIhandler.Instance.SaveHighScore();
+    }
+
+    private void DisplayHighScore()
+    {
+        BestScoreText.text = "Best Score : " + MenuUIhandler.Instance.HighScorePlayerName + " : " + MenuUIhandler.Instance.HighScore.ToString();
     }
 }
